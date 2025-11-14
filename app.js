@@ -11,11 +11,12 @@ const canLogEndpointInformation = process.env.CAN_LOG_ENDPOINT_INFORMATION;
 
 // MongoDB connection (optional - not required for payment instructions API)
 if (process.env.MONGODB_URI) {
+  const { appLogger } = require('@app-core/logger');
   createConnection({
     uri: process.env.MONGODB_URI,
   }).catch((err) => {
     // Log but don't fail if MongoDB connection fails
-    console.warn('MongoDB connection failed (optional):', err.message);
+    appLogger.warn({ error: err.message }, 'mongodb-connection-optional-failed');
   });
 }
 
