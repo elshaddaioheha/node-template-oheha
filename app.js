@@ -9,11 +9,20 @@ const { createQueue } = require('@app-core/queue');
 
 const canLogEndpointInformation = process.env.CAN_LOG_ENDPOINT_INFORMATION;
 
-createConnection({
-  uri: process.env.MONGODB_URI,
-});
+// MongoDB connection (optional - not required for payment instructions API)
+if (process.env.MONGODB_URI) {
+  createConnection({
+    uri: process.env.MONGODB_URI,
+  }).catch((err) => {
+    // Log but don't fail if MongoDB connection fails
+    console.warn('MongoDB connection failed (optional):', err.message);
+  });
+}
 
-createQueue();
+// Queue connection (optional - not required for payment instructions API)
+if (process.env.REDIS_URL) {
+  createQueue();
+}
 
 const server = createServer({
   port: process.env.PORT,
